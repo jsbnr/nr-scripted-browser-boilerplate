@@ -1,5 +1,5 @@
-# New Relic Scripted Browser Synthetic Framework
-This simple framework allows you to author multiple steps of a journey and record the timings and failures of each step. 
+# New Relic Scripted Browser Boilerplate
+This simple boilerplate allows you to author multiple steps of a journey and record the timings and failures of each step. 
 
 Steps can be:
 
