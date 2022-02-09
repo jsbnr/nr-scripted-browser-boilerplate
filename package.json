@@ -1,0 +1,16 @@
+{
+  "name": "synthetic-framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "request": "^2.88.2",
+    "chromedriver": "^98.0.0",
+    "selenium-webdriver": "^3.6.0"
+  }
+}
