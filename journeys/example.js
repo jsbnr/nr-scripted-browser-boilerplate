@@ -86,7 +86,9 @@ const startCategory = (category,description) => {
 }
 
 /**
- * Journey step groups. 
+ * 
+ * --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ * Journey Categories. 
  * 
  * Group your jouneys steps into categories to keep them tidy!
  */
@@ -100,6 +102,7 @@ const startCategory = (category,description) => {
     return Promise.resolve(true)
     .then(timedStep(STEP_TYPE.HARD,"Open Start URL",category,()=>{ return $browser.get(startURL).then(e=>e) }))
     .then(timedStep(STEP_TYPE.HARD,"Set Window Size",category,()=>{ return $browser.manage().window().setSize(2328,1667).then(e=>e) }))
+
  }
 
  const JRN_Search = ()=> {
@@ -146,7 +149,7 @@ const startCategory = (category,description) => {
 
 
 
- $browser.getCapabilities().then(function () { })
+ $browser.getCapabilities().then(function () { }) //we're ready to start
  
  .then(function (){
     return Promise.resolve(true)

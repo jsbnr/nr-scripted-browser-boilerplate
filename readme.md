@@ -63,6 +63,11 @@ e.g.
 .then(  timedStep(STEP_TYPE.HARD,"Click search icon",category,()=>{ return $browser.waitForAndFindElement(By.xpath("//button[@id='example']",DefaultTimeout)).then(e=>(e.click())) })  )
 ```
 
+### Startup
+The script starts by checkign for brwoser cpabailities then initiating a promise chain. Simply add your journey set categories in turn, following the pattern laid out. 
+Once the journey steps have all been run the script ends, logging our any final data and error summary.
+
+
 ### Selenium IDE Formatter conversion
 
 You may have steps generated with the selenium ide formatter [extension](https://chrome.google.com/webstore/detail/synthetics-formatter-for/agedeoibceidbaeajbehgiejlekicbfd). If so then the steps can easily be converted into the boilerplate format like this:
