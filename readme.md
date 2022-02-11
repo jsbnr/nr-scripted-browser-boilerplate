@@ -52,4 +52,32 @@ const JRN_YourCategoryName = ()=> {
  Each step should return a promise. Subsequent steps should be provided using a `.then()` construct and wrapped in the `timedStep()` function.
 
  The `timedStep()` function takes the following parameters:
+
+ 1: Step type, one of: `STEP_TYPE.HARD`, `STEP_TYPE.SOFT`, `STEP_TYPE.OPTIONAL`
+ 2: Title/description of the step
+ 3: Category (use the variable as defined in the category setup)
+ 4: Wrapped selenium promise function `()=> {return $browser.waitForAndFindElement(...)}` 
  
+e.g.
+```
+.then(  timedStep(STEP_TYPE.HARD,"Click search icon",category,()=>{ return $browser.waitForAndFindElement(By.xpath("//button[@id='example']",DefaultTimeout)).then(e=>(e.click())) })  )
+```
+
+### Selenium IDE Formatter conversion
+
+You may have steps generated with the selenium ide formatter [extension](https://chrome.google.com/webstore/detail/synthetics-formatter-for/agedeoibceidbaeajbehgiejlekicbfd). If so then the steps can easily be converted into the boilerplate format like this:
+
+```
+
+Example step from the output of the formatter:
+    .then( function(){return logger.log(5,"Click By.css(\".header__cta svg\")","test 1"),$browser.waitForAndFindElement(By.css(".header__cta svg"),DefaultTimeout).then(e=>(e.click(),Promise.resolve(!0)))})
+
+This should be converted like this:
+    .then( function(){return logger.log(5,"Click By.css(\".header__cta svg\")","test 1"),            $browser.waitForAndFindElement(By.css(".header__cta svg"),DefaultTimeout).then(e=>(e.click(),Promise.resolve(!0)))})
+                 V                           V                                      V                 V
+                 V                           V                                      V                 V
+    .then(       timedStep(STEP_TYPE.HARD,"Click By.css(\".header__cta svg\")",category,()=>{ return $browser.waitForAndFindElement(By.css(".header__cta svg"),DefaultTimeout).then(e=>(e.click(),Promise.resolve(!0)))}))
+                 ^                                                                       ^
+                 |                                                                       |
+                 --- Replace function with timedStep()                                   --- Add anonymous function and return the selenium step
+```
