@@ -4,7 +4,7 @@ This simple boilerplate allows you to author multiple steps of a journey and rec
 Steps can be:
 
 - mandatory 'hard' steps that stop the script when they fail
-- 'soft' steps that will fail ther jounrey but continue to allow other steps to complete 
+- 'soft' steps that will fail their journey but continue to allow other steps to complete 
 - 'optional' steps which are allowed to fail without failing the script.
 
 
@@ -21,7 +21,7 @@ node example.js
 ```
 
 ## Usage
-The intention of the boilerplate is to simplify the creation of multi step journeys, providing a comprehensive logging framework that shows how long steps take to complete and identifies locations of failure. Journeys are made up of individual steps which are then optionally grouped into categories for tidyness. You wrap each step in a timedStep() wrapper function which runs the step and logs the timing information for that step. It also deals with failure conditions. 
+The intention of the boilerplate is to simplify the creation of multi step journeys, providing a comprehensive logging framework that shows how long steps take to complete and identifies locations of failure. Journeys are made up of individual steps which are then optionally grouped into categories for tidiness. You wrap each step in a timedStep() wrapper function which runs the step and logs the timing information for that step. It also deals with failure conditions. 
 
 Each step can be configured to be:
 
@@ -30,7 +30,7 @@ Each step can be configured to be:
 - 'optional'- these steps  are allowed to fail without failing the script at all. They can be used for optional steps such as hiding adverts or cookie banners.
 
 ### Journey Category
-A category runs multiple steps to achieve a ourpose. For instance a category might be "Window setip" or "Login" or "Search for product". You can chain categories together. This allows you to build a re-usable set of categories.
+A category runs multiple steps to achieve a purpose. For instance a category might be "Window setup" or "Login" or "Search for product". You can chain categories together. This allows you to build a re-usable set of categories.
 
 Each category is a function, follow the format by setting the `category` and `description` variables. Then add the steps as required
 
@@ -42,8 +42,8 @@ const JRN_YourCategoryName = ()=> {
     startCategory(category,description)
     return Promise.resolve(true)
     //Add your steps here, e.g.: 
-    //.then(timedStep(STEP_TYPE.HARD,"Open Start URL",category,()=>{ return $browser.get("https://newrelic.com").then(e=>e) }))
-    //.then(timedStep(STEP_TYPE.HARD,"Set Window Size",category,()=>{ return $browser.manage().window().setSize(2328,1667).then(e=>e) }))
+    //.then(timedStep(STEP_TYPE.HARD,"Open Start URL",category,()=>{ return $browser.get("https://newrelic.com")}))
+    //.then(timedStep(STEP_TYPE.HARD,"Set Window Size",category,()=>{ return $browser.manage().window().setSize(2328,1667)}))
  }
  ```
 
@@ -64,7 +64,7 @@ e.g.
 ```
 
 ### Startup
-The script starts by checkign for brwoser cpabailities then initiating a promise chain. Simply add your journey set categories in turn, following the pattern laid out. 
+The script starts by checking for browser capabilities then initiating a promise chain. Simply add your journey set categories in turn, following the pattern laid out. 
 Once the journey steps have all been run the script ends, logging our any final data and error summary.
 
 
