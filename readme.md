@@ -1,6 +1,8 @@
 # New Relic Scripted Browser Boilerplate
 This simple boilerplate allows you to author multiple steps of a journey and record the timings and failures of each step. 
 
+** Note: Recent updates mean latest versions will no longer run on the legacy (old) synthetic run time. **
+
 Steps can be:
 
 - mandatory 'hard' steps that stop the script when they fail
