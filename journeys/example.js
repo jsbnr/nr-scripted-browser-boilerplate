@@ -206,9 +206,9 @@ const JRN_Search = async () => {
         By.xpath("//div[contains(@class,'st-app-results__summary')]"),
         DefaultTimeout
       );
-      e.getText().then((text) => {
-        assert(text.includes("Showing 1–10") && text.includes(SEARCH_TERM));
-      });
+      const text = await e.getText();
+
+      assert(text.includes("Showing 1–10") && text.includes(SEARCH_TERM));
     }
   );
 
@@ -217,17 +217,14 @@ const JRN_Search = async () => {
     STEP_TYPE.SOFT,
     "Check 10 results shown on page",
     category,
-    () => {
-      return $webDriver
-        .findElements(
-          By.xpath(
-            "//div[@id='nr-search-app']//div[@class='st-app-results']/div[contains(@class,'st-app-result')]"
-          ),
-          DefaultTimeout
-        )
-        .then((e) => {
-          assert(e.length == 10);
-        });
+    async () => {
+      const e = await $webDriver.findElements(
+        By.xpath(
+          "//div[@id='nr-search-app']//div[@class='st-app-results']/div[contains(@class,'st-app-result')]"
+        ),
+        DefaultTimeout
+      );
+      assert(e.length == 10);
     }
   );
 
@@ -263,9 +260,9 @@ const JRN_Search = async () => {
     category,
     async () => {
       const e = await waitForAndFindElement(By.xpath("//h1"), DefaultTimeout);
-      e.getText().then((text) =>
-        assert.strictEqual(text, "Some header we expect to fail")
-      );
+      const text = await e.getText();
+
+      assert.strictEqual(text, "Some header we expect to fail");
     }
   );
 };
