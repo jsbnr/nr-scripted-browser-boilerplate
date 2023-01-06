@@ -91,27 +91,6 @@ browser.waitForElement = function(locatorOrElement, timeoutMsOpt) {
   );
 };
 
-browser.waitForAndFindElement = function(locatorOrElement, timeoutMsOpt) {
-  return this.waitForElement(locatorOrElement, timeoutMsOpt).then(function(
-    element
-  ) {
-    return browser
-      .wait(
-        driver.until.elementIsVisible(element),
-        timeoutMsOpt || 1000,
-        "Timed-out waiting for element to be visible using: " + locatorOrElement
-      )
-      .then(function() {
-        return element;
-      });
-  });
-};
-
-browser.waitForPendingRequests = timeout => {
-  return new Promise(resolve => {
-    setTimeout(resolve(true), timeout);
-  });
-};
 
 browser.addHeaders = function() {
   console.log(`$browser.addHeaders(): not supported ignoring.`);
@@ -126,8 +105,10 @@ browser.getCurrentUrl = function() {
   console.log("$browser.getCurrentUrl() NOT implemented");
 };
 
-global.$driver = driver;
-global.$browser = browser;
+
+
+global.$webDriver = browser;
+global.$selenium = driver;
 global.$util = util;
 global.$env = env;
 global.$http = http;
