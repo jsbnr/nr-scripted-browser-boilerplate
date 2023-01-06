@@ -14,7 +14,7 @@ if (typeof $env === "undefined" || $env === null) {
 
 /* Initial setup */
 const assert = require("assert");
-const By = $driver.By;
+const By = $selenium.By;
 const globalStartTime = Date.now()
 const STEP_TYPE = {
     HARD: "HARD",
@@ -89,6 +89,33 @@ const startCategory = (category, description) => {
     console.log(`${description}\n`)
 }
 
+
+/**
+ * waitForAndFindElement()
+ * Replacement for the deprecated $browser.waitForAndFindElement()
+ * 
+ * @param {string} locator 
+ * @param {string} waitTimeout
+ */
+const waitForAndFindElement = async (locator,waitTimeout) => {
+    const element = await $webDriver.wait($selenium.until.elementLocated(locator), waitTimeout, 'Timed-out waiting for element to be located using: '+locator);
+    await $webDriver.wait($selenium.until.elementIsVisible(element), waitTimeout, 'Timed-out waiting for element to be visible using ${element}');
+    return await $webDriver.findElement(locator);
+}
+
+/**
+ * waitForAndFindElement()
+ * Replacement for the deprecated $browser.waitForAndFindElement()
+ * 
+ * @param {string} locator 
+ * @param {string} waitTimeout
+ */
+const waitForPendingRequests = async (locator,waitTimeout) => {
+    return await $webDriver.wait($webDriver.executeScript('return document.readyState == \'complete\''), waitTimeout, 'waitForPendingRequests');
+}
+
+
+
 /**
  * 
  * --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -105,10 +132,10 @@ const JRN_WindowSetup = (startURL) => {
     startCategory(category, description)
     return Promise.resolve(true)
         .then(timedStep(STEP_TYPE.HARD, "Open Start URL", category, () => {
-            return $browser.get(startURL)
+            return $webDriver.get(startURL)
         }))
         .then(timedStep(STEP_TYPE.HARD, "Set Window Size", category, () => {
-            return $browser.manage().window().setSize(2328, 1667)
+            return $webDriver.manage().window().setRect({x: 0, y: 0, width: 2328, height: 1667})
         }))
 
 }
@@ -122,18 +149,18 @@ const JRN_Search = () => {
     startCategory(category, description)
     return Promise.resolve(true)
         .then(timedStep(STEP_TYPE.HARD, "Click search icon", category, () => {
-            return $browser.waitForAndFindElement(By.xpath("//div[@id='header-main']//button[contains(@class,'header-search-trigger')]", DefaultTimeout)).then(e => (e.click()))
+            return waitForAndFindElement(By.xpath("//div[@id='header-main']//button[contains(@class,'header-search-trigger')]"), DefaultTimeout).then(e => (e.click()))
         }))
         .then(timedStep(STEP_TYPE.HARD, "Type a search term", category, () => {
-            return $browser.waitForAndFindElement(By.xpath("//input[contains(@class,'js-full-text-search')]", DefaultTimeout)).then(e => (e.sendKeys(SEARCH_TERM)))
+            return waitForAndFindElement(By.xpath("//input[contains(@class,'js-full-text-search')]"), DefaultTimeout).then(e => (e.sendKeys(SEARCH_TERM)))
         }))
         .then(timedStep(STEP_TYPE.HARD, "Click submit search icon", category, () => {
-            return $browser.waitForAndFindElement(By.xpath("//button[contains(@class,'js-search-form-submit')]", DefaultTimeout)).then(e => (e.click()))
+            return waitForAndFindElement(By.xpath("//button[contains(@class,'js-search-form-submit')]"), DefaultTimeout).then(e => (e.click()))
         }))
 
         //Example of checking for presence of text.
         .then(timedStep(STEP_TYPE.SOFT, "Check results text is shown", category, () => {
-            return $browser.waitForAndFindElement(By.xpath("//div[contains(@class,'st-app-results__summary')]", DefaultTimeout))
+            return waitForAndFindElement(By.xpath("//div[contains(@class,'st-app-results__summary')]"), DefaultTimeout)
                 .then(e => {
                     e.getText().then(text => {
                         assert(text.includes("Showing 1–10") && text.includes(SEARCH_TERM))
@@ -143,7 +170,7 @@ const JRN_Search = () => {
 
         //Example showing how we can interrogate the items returned by the findElements function.
         .then(timedStep(STEP_TYPE.SOFT, "Check 10 results shown on page", category, () => {
-            return $browser.findElements(By.xpath("//div[@id='nr-search-app']//div[@class='st-app-results']/div[contains(@class,'st-app-result')]", DefaultTimeout))
+            return $webDriver.findElements(By.xpath("//div[@id='nr-search-app']//div[@class='st-app-results']/div[contains(@class,'st-app-result')]"), DefaultTimeout)
                 .then(e => {
                     assert(e.length == 10)
                 })
@@ -152,29 +179,29 @@ const JRN_Search = () => {
 
         //Example how to sleep for a moment
         .then(() => {
-            return $browser.sleep(1000)
+            return $webDriver.sleep(1000)
         }) //an unlogged sleep, this wont appear in the log
         .then(timedStep(STEP_TYPE.HARD, "Sleep a moment", category, () => {
-            return $browser.sleep(1000)
+            return $webDriver.sleep(1000)
         })) // a logged sleep, this will appear in the log
 
         //Example showing how we can click a specific element filtered by some descendant condition, in this case we want to find a search result that is on the docs.newrelic.com domain
         .then(timedStep(STEP_TYPE.HARD, "Find and click first docs link", category, () => {
-            return $browser.waitForAndFindElement(By.xpath("//div[@id='nr-search-app']//div[@class='st-app-results']/div[contains(@class,'st-app-result')][descendant::a[contains(@href,'docs.newrelic.com')]][1]", DefaultTimeout)).then(e => {
+            return waitForAndFindElement(By.xpath("//div[@id='nr-search-app']//div[@class='st-app-results']/div[contains(@class,'st-app-result')][descendant::a[contains(@href,'docs.newrelic.com')]][1]"), DefaultTimeout).then(e => {
                 e.click()
             })
         }))
 
         //Example showing how we might check text (in this case demonstrating an optional step as this will fail)
         .then(timedStep(STEP_TYPE.OPTIONAL, "Confirm header text is correct", category, () => {
-            return $browser.waitForAndFindElement(By.xpath("//h1", DefaultTimeout)).then(e => {
+            return waitForAndFindElement(By.xpath("//h1"),DefaultTimeout).then(e => {
                 e.getText().then(text => assert.strictEqual(text, "Some header we expect to fail"))
             })
         }))
 
 }
 
-$browser.getCapabilities().then(function () {}) //we're ready to start
+$webDriver.getCapabilities().then(function () {}) //we're ready to start
 
     .then(function () {
         return Promise.resolve(true)
