@@ -38,7 +38,7 @@ let HARD_FAILURE = "";
  * @returns Promise
  */
 
-const timedStep = async (type, description, category, fn) => {
+const timedStep = async (type, description, category, stepFn) => {
   const thisStep = STEP++;
   if (!CATEGORY_STEP[category]) {
     CATEGORY_STEP[category] = 1;
@@ -50,7 +50,7 @@ const timedStep = async (type, description, category, fn) => {
   );
 
   try {
-    await fn();
+    await stepFn(); //runs the function for this step
     const endTimestamp = Date.now() - globalStartTime;
     const elapsed = endTimestamp - startTimestamp;
     console.log(
@@ -146,11 +146,11 @@ const JRN_WindowSetup = async (startURL) => {
 
   startCategory(category, description);
 
-  await timedStep(STEP_TYPE.HARD, "Open Start URL", category, () => {
+  await timedStep(STEP_TYPE.HARD, "Open Start URL", category,  async () => {
     return $webDriver.get(startURL);
   });
 
-  await timedStep(STEP_TYPE.HARD, "Set Window Size", category, () => {
+  await timedStep(STEP_TYPE.HARD, "Set Window Size", category,  async () => {
     return $webDriver
       .manage()
       .window()
