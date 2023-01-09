@@ -38,7 +38,7 @@ let HARD_FAILURE = "";
  * @returns Promise
  */
 
-const timedStep = async (type, description, category, fn) => {
+const timedStep = async (type, description, category, stepFn) => {
   const thisStep = STEP++;
   if (!CATEGORY_STEP[category]) {
     CATEGORY_STEP[category] = 1;
@@ -50,7 +50,7 @@ const timedStep = async (type, description, category, fn) => {
   );
 
   try {
-    await fn();
+    await stepFn(); //runs the function for this step
     const endTimestamp = Date.now() - globalStartTime;
     const elapsed = endTimestamp - startTimestamp;
     console.log(
@@ -146,12 +146,12 @@ const JRN_WindowSetup = async (startURL) => {
 
   startCategory(category, description);
 
-  await timedStep(STEP_TYPE.HARD, "Open Start URL", category, () => {
-    return $webDriver.get(startURL);
+  await timedStep(STEP_TYPE.HARD, "Open Start URL", category,  async () => {
+    $webDriver.get(startURL);
   });
 
-  await timedStep(STEP_TYPE.HARD, "Set Window Size", category, () => {
-    return $webDriver
+  await timedStep(STEP_TYPE.HARD, "Set Window Size", category,  async () => {
+    $webDriver
       .manage()
       .window()
       .setRect({ x: 0, y: 0, width: 2328, height: 1667 });
@@ -172,7 +172,7 @@ const JRN_Search = async () => {
       ),
       DefaultTimeout
     );
-    return e.click();
+    e.click();
   });
 
   await timedStep(STEP_TYPE.HARD, "Type a search term", category, async () => {
@@ -180,7 +180,7 @@ const JRN_Search = async () => {
       By.xpath("//input[contains(@class,'js-full-text-search')]"),
       DefaultTimeout
     );
-    return e.sendKeys(SEARCH_TERM);
+    e.sendKeys(SEARCH_TERM);
   });
 
   await timedStep(
@@ -192,7 +192,7 @@ const JRN_Search = async () => {
         By.xpath("//button[contains(@class,'js-search-form-submit')]"),
         DefaultTimeout
       );
-      return e.click();
+      e.click();
     }
   );
 
@@ -229,13 +229,14 @@ const JRN_Search = async () => {
   );
 
   //Example how to sleep for a moment
-  await $webDriver.sleep(1000);
+   //an unlogged sleep, this WON'T appear in the log
+  await $webDriver.sleep(1000);  
 
-  //an unlogged sleep, this wont appear in the log
+  // a logged sleep, this will appear in the log
   await timedStep(STEP_TYPE.HARD, "Sleep a moment", category, () => {
     return $webDriver.sleep(1000);
   });
-  // a logged sleep, this will appear in the log
+  
 
   //Example showing how we can click a specific element filtered by some descendant condition, in this case we want to find a search result that is on the docs.newrelic.com domain
   await timedStep(
@@ -294,7 +295,7 @@ $webDriver
               `\n\n========[ JOURNEY END ]========\nJourney completed successfully`
             );
           }
-          //logger.endTestCase("test1");
+
         },
         function (err) {
           console.log(err.message);
