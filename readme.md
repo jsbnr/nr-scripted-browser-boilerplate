@@ -1,4 +1,11 @@
 # New Relic Scripted Browser Boilerplate
+
+### NOTE: This project has been moved to here: 
+[https://github.com/newrelic-experimental/nr-scripted-browser-framework](https://github.com/newrelic-experimental/nr-scripted-browser-framework)
+
+
+---
+
 This scripted browser boilerplate allows you to author multiple steps of a journey and record the timings and manage the effect of failures of each step.  Each set of steps can be grouped intore-usable categories. Steps can be set to fail the script immediately or defer failure until the script completes. This allows scripted browser journeys to continue even if failures are detected, ensureing as much of your journey is tested as possible before failures are reported.
 
 Steps can be:
